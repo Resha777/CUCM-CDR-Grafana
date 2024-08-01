@@ -1,0 +1,179 @@
+{
+  "datasource": {
+    "type": "mysql",
+    "uid": "be763f6d-fa19-4afd-953a-6cbddbc9d5d5"
+  },
+  "fieldConfig": {
+    "defaults": {
+      "custom": {
+        "align": "center",
+        "cellOptions": {
+          "type": "auto"
+        },
+        "inspect": false,
+        "filterable": true
+      },
+      "unitScale": true,
+      "mappings": [],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "color": "green",
+            "value": null
+          },
+          {
+            "color": "red",
+            "value": 80
+          }
+        ]
+      },
+      "unit": "none"
+    },
+    "overrides": []
+  },
+  "gridPos": {
+    "h": 8,
+    "w": 23,
+    "x": 0,
+    "y": 0
+  },
+  "id": 6,
+  "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "footer": {
+      "show": false,
+      "reducer": [
+        "sum"
+      ],
+      "countRows": false,
+      "fields": "",
+      "enablePagination": false
+    },
+    "sortBy": [
+      {
+        "displayName": "DX_Number",
+        "desc": false
+      }
+    ]
+  },
+  "pluginVersion": "10.3.3",
+  "targets": [
+    {
+      "dataset": "cucm_cdr",
+      "datasource": {
+        "type": "mysql",
+        "uid": "be763f6d-fa19-4afd-953a-6cbddbc9d5d5"
+      },
+      "editorMode": "code",
+      "format": "table",
+      "rawQuery": true,
+      "rawSql": "SELECT \n  callingPartyNumber AS DX_Number,\n  COUNT(*) AS Outbound_Calls\nFROM cucm_cdr.cdr_records\nWHERE LENGTH(callingPartyNumber) <= 3\n  AND LENGTH(originalCalledPartyNumber) <= 3\n  AND timestamp >= $__timeFrom()\n  AND timestamp <= $__timeTo()\nGROUP BY \n  callingPartyNumber;\n",
+      "refId": "A",
+      "sql": {
+        "columns": [
+          {
+            "parameters": [
+              {
+                "name": "callingPartyNumber",
+                "type": "functionParameter"
+              }
+            ],
+            "type": "function"
+          }
+        ],
+        "groupBy": [
+          {
+            "property": {
+              "type": "string"
+            },
+            "type": "groupBy"
+          }
+        ],
+        "limit": 50
+      },
+      "table": "cdr_records"
+    },
+    {
+      "dataset": "cucm_cdr",
+      "datasource": {
+        "type": "mysql",
+        "uid": "be763f6d-fa19-4afd-953a-6cbddbc9d5d5"
+      },
+      "editorMode": "code",
+      "format": "table",
+      "hide": false,
+      "rawQuery": true,
+      "rawSql": "SELECT \n  finalCalledPartyNumber AS DX_Number,\n  COUNT(*) AS Inbound_Calls\nFROM cucm_cdr.cdr_records\nWHERE timestamp >= $__timeFrom()\n  AND timestamp <= $__timeTo()\n  AND LENGTH(finalCalledPartyNumber) <= 3\n  AND finalCalledPartyUnicodeLoginUserID != 'NULL'\nGROUP BY \nfinalCalledPartyNumber;",
+      "refId": "B",
+      "sql": {
+        "columns": [
+          {
+            "parameters": [],
+            "type": "function"
+          }
+        ],
+        "groupBy": [
+          {
+            "property": {
+              "type": "string"
+            },
+            "type": "groupBy"
+          }
+        ],
+        "limit": 50
+      }
+    },
+    {
+      "dataset": "cucm_cdr",
+      "datasource": {
+        "type": "mysql",
+        "uid": "be763f6d-fa19-4afd-953a-6cbddbc9d5d5"
+      },
+      "editorMode": "code",
+      "format": "table",
+      "hide": false,
+      "rawQuery": true,
+      "rawSql": "SELECT \n  originalCalledPartyNumber AS DX_Number,\n  COUNT(*) AS Missed_Calls\nFROM cucm_cdr.cdr_records\nWHERE timestamp >= $__timeFrom()\n  AND timestamp <= $__timeTo()\n  AND finalCalledPartyNumber = 9877\n  AND LENGTH(originalCalledPartyNumber) <= 3\nGROUP BY \noriginalCalledPartyNumber;",
+      "refId": "C",
+      "sql": {
+        "columns": [
+          {
+            "parameters": [],
+            "type": "function"
+          }
+        ],
+        "groupBy": [
+          {
+            "property": {
+              "type": "string"
+            },
+            "type": "groupBy"
+          }
+        ],
+        "limit": 50
+      }
+    }
+  ],
+  "title": "DX Statistics",
+  "transformations": [
+    {
+      "id": "merge",
+      "options": {}
+    },
+    {
+      "id": "convertFieldType",
+      "options": {
+        "conversions": [
+          {
+            "destinationType": "number",
+            "targetField": "DX_Number"
+          }
+        ],
+        "fields": {}
+      }
+    }
+  ],
+  "type": "table"
+}
