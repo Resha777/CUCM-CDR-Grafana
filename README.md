@@ -16,6 +16,16 @@ This project will enable you to display your CUCM devices call statistics into y
 
 6- Run the script and if it's working you should see the files with cdr_* are deleted, login to DB and you should see the data inserted.
 
+7- Load the json file into your grafana and make sure you select the correct DB.
+
+8- You should see a final result like this:
+![image](https://github.com/user-attachments/assets/7ea14bcf-9220-4413-816a-21011fd66a8b)
+
+9- Kindly open an issue if you need any questions.
+
+
+
+
 
 
 
