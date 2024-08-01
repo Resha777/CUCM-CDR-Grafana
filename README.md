@@ -9,6 +9,9 @@ This project will enable you to display your CUCM devices call statistics into y
 ![image](https://github.com/user-attachments/assets/1a006f34-6653-4ac8-9747-b0351c99439a)
 
 3- SSH to your linux VM and navigate to your SFTP directory , you should begin to see files starting with cdr_* and cmr_* , those are sent by CUCM and contains the calls info.
+<img width="509" alt="image" src="https://github.com/user-attachments/assets/647eb0e1-9f19-45e5-a4f8-4008116c0fcf">
+
+
 
 4- You need to install MariaDB/MYSQL if you don't have one yet, it's recommended to install it in the same VM , and configure a new DB and user/password to use later.
 
